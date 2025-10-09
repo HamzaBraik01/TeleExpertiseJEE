@@ -1,0 +1,183 @@
+## Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+## Java
+*.class
+*.log
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+## IDE Files
+### IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+### Eclipse
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.project
+.classpath
+
+### Visual Studio Code
+.vscode/
+*.code-workspace
+
+### NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+## OS Files
+### Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+### macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+## Logs et bases de données
+*.log
+*.sql.backup
+*.db
+*.sqlite
+*.sqlite3
+
+## Configuration sensible
+### Fichiers de configuration avec mots de passe
+application-local.properties
+application-dev.properties
+application-prod.properties
+config/local/
+secrets/
+
+### Clés et certificats
+*.p12
+*.jks
+*.keystore
+*.pem
+*.key
+*.crt
+*.cert
+
+## Fichiers temporaires du projet
+### Uploads et fichiers temporaires
+uploads/
+temp/
+tmp/
+cache/
+
+### Rapports et documentation générée
+reports/
+docs/generated/
+javadoc/
+
+## Tests
+### Rapports de tests
+surefire-reports/
+failsafe-reports/
+test-output/
+coverage/
+
+### Base de données de test
+testdb/
+h2db/
+
+## Spécifique au projet télé-expertise
+### Données de test
+test-data/
+sample-data/
+
+### Images et fichiers patients (si applicable)
+patient-files/
+medical-images/
+
+### Logs de l'application
+application.log
+teleexpertise.log
+medical-audit.log
+
+### Backups
+backup/
+*.backup
+
+## Node.js (si utilisation de front-end tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+## Autres
+*.orig
+*.patch
+*.diff
+.gradle/
+gradle/
