@@ -4,9 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
-/**
- * Classe utilitaire pour gérer JPA/Hibernate
- */
+
 public class JPAUtil {
 
     private static EntityManagerFactory entityManagerFactory;

@@ -1,10 +1,9 @@
 package com.teleexpertise.util;
 
+import com.teleexpertise.model.Role;
+import com.teleexpertise.model.User;
 import jakarta.persistence.EntityManager;
 
-/**
- * Classe pour tester la connexion à la base de données et créer les tables
- */
 public class DatabaseInitializer {
 
     public static void main(String[] args) {
@@ -13,20 +12,48 @@ public class DatabaseInitializer {
         EntityManager entityManager = null;
 
         try {
-            // Cette ligne va déclencher la création des tables grâce à hibernate.hbm2ddl.auto=update
             entityManager = JPAUtil.getEntityManager();
-
-            System.out.println("✅ Connexion à la base de données établie avec succès !");
-            System.out.println("✅ Tables créées/mises à jour automatiquement par Hibernate !");
-
-            // Test simple de la connexion
             entityManager.getTransaction().begin();
 
-            // Vérification que la transaction fonctionne
-            System.out.println("✅ Transaction de test démarrée avec succès !");
+            System.out.println("✅ Connexion établie — insertion des utilisateurs de test...");
 
-            entityManager.getTransaction().rollback(); // On annule car c'est juste un test
-            System.out.println("✅ Transaction de test annulée - tout fonctionne !");
+            // === Utilisateur 1 : Médecin Généraliste ===
+            User generaliste = new User(
+                    "dr_saad",
+                    PasswordUtil.hashPassword("Saad@123"), // mot de passe haché !
+                    "Saad",
+                    "El Amrani",
+                    "dr.saad@example.com",
+                    Role.GENERALISTE
+            );
+
+            // === Utilisateur 2 : Infirmier ===
+            User infirmier = new User(
+                    "nurse_amina",
+                    PasswordUtil.hashPassword("Amina@123"),
+                    "Amina",
+                    "Bouzid",
+                    "amina.nurse@example.com",
+                    Role.INFIRMIER
+            );
+
+            // === Utilisateur 3 : Spécialiste ===
+            User specialiste = new User(
+                    "dr_youssef",
+                    PasswordUtil.hashPassword("Youssef@123"),
+                    "Youssef",
+                    "Tazi",
+                    "dr.youssef@example.com",
+                    Role.SPECIALISTE
+            );
+
+            // Sauvegarde des utilisateurs
+            entityManager.persist(generaliste);
+            entityManager.persist(infirmier);
+            entityManager.persist(specialiste);
+
+            entityManager.getTransaction().commit();
+            System.out.println("✅ Données insérées avec succès !");
 
         } catch (Exception e) {
             System.err.println("❌ Erreur lors de l'initialisation : " + e.getMessage());
@@ -42,6 +69,6 @@ public class DatabaseInitializer {
             JPAUtil.shutdown();
         }
 
-        System.out.println("🎯 Initialisation terminée. Vérifiez votre base de données MySQL !");
+        System.out.println("🎯 Initialisation terminée. Vérifiez votre base MySQL !");
     }
 }
