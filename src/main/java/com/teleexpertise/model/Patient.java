@@ -38,10 +38,19 @@ public class Patient {
     private LocalDateTime createdAt;
 
     @Column(name = "en_attente")
-    private boolean enAttente = false;
+    private boolean enAttente = true; // Automatiquement en attente lors de la création
 
     @Column(name = "heure_arrivee")
     private LocalDateTime heureArrivee;
+
+    @Column(name = "statut")
+    private String statut;
+
+    @Column(name = "priorite")
+    private Integer priorite = 1;
+
+    @Column(name = "date_arrivee")
+    private LocalDateTime dateArrivee;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SignesVitaux> signesVitaux;
@@ -117,6 +126,15 @@ public class Patient {
 
     public boolean isEnAttente() { return enAttente; }
     public void setEnAttente(boolean enAttente) { this.enAttente = enAttente; }
+
+    public String getStatut() { return statut; }
+    public void setStatut(String statut) { this.statut = statut; }
+
+    public Integer getPriorite() { return priorite; }
+    public void setPriorite(Integer priorite) { this.priorite = priorite; }
+
+    public LocalDateTime getDateArrivee() { return dateArrivee; }
+    public void setDateArrivee(LocalDateTime dateArrivee) { this.dateArrivee = dateArrivee; }
 
     public LocalDateTime getHeureArrivee() { return heureArrivee; }
     public void setHeureArrivee(LocalDateTime heureArrivee) { this.heureArrivee = heureArrivee; }

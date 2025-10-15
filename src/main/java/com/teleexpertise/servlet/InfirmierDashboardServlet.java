@@ -83,8 +83,8 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 .stream()
                 .filter(Patient::isEnAttente)
                 .sorted((p1, p2) -> {
-                    if (p1.getHeureArrivee() != null && p2.getHeureArrivee() != null) {
-                        return p1.getHeureArrivee().compareTo(p2.getHeureArrivee());
+                    if (p1.getCreatedAt() != null && p2.getCreatedAt() != null) {
+                        return p1.getCreatedAt().compareTo(p2.getCreatedAt());
                     }
                     return 0;
                 })
@@ -118,20 +118,67 @@ public class InfirmierDashboardServlet extends HttpServlet {
 
     private void handleListPatients(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
+        // Récupérer tous les patients
         List<Patient> allPatients = patientDAO.findAll();
+
+        // Récupérer les paramètres de recherche
+        String searchTerm = req.getParameter("searchTerm");
+        String filterStatus = req.getParameter("filterStatus");
+
+        // Filtrer les patients selon les critères de recherche
+        List<Patient> filteredPatients = null;
+
+        if ((searchTerm != null && !searchTerm.trim().isEmpty()) ||
+            (filterStatus != null && !filterStatus.trim().isEmpty() && !"tous".equals(filterStatus))) {
+
+            filteredPatients = allPatients.stream()
+                .filter(patient -> {
+                    boolean matchesSearch = true;
+                    boolean matchesStatus = true;
+
+                    // Filtrage par terme de recherche
+                    if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                        String searchLower = searchTerm.toLowerCase().trim();
+                        matchesSearch =
+                            (patient.getNom() != null && patient.getNom().toLowerCase().contains(searchLower)) ||
+                            (patient.getPrenom() != null && patient.getPrenom().toLowerCase().contains(searchLower)) ||
+                            (patient.getNumeroSecuriteSociale() != null && patient.getNumeroSecuriteSociale().contains(searchTerm.trim())) ||
+                            (patient.getTelephone() != null && patient.getTelephone().contains(searchTerm.trim()));
+                    }
+
+                    // Filtrage par statut
+                    if (filterStatus != null && !filterStatus.trim().isEmpty() && !"tous".equals(filterStatus)) {
+                        if ("disponible".equals(filterStatus)) {
+                            matchesStatus = !patient.isEnAttente();
+                        } else if ("attente".equals(filterStatus)) {
+                            matchesStatus = patient.isEnAttente();
+                        }
+                    }
+
+                    return matchesSearch && matchesStatus;
+                })
+                .collect(java.util.stream.Collectors.toList());
+        }
+
+        // Calculer les patients en attente
         List<Patient> patientsEnAttente = allPatients
                 .stream()
                 .filter(Patient::isEnAttente)
                 .sorted((p1, p2) -> {
-                    if (p1.getHeureArrivee() != null && p2.getHeureArrivee() != null) {
-                        return p1.getHeureArrivee().compareTo(p2.getHeureArrivee());
+                    if (p1.getCreatedAt() != null && p2.getCreatedAt() != null) {
+                        return p1.getCreatedAt().compareTo(p2.getCreatedAt());
                     }
                     return 0;
                 })
                 .collect(java.util.stream.Collectors.toList());
 
+        // Mettre les données dans les attributs de la requête
         req.setAttribute("allPatients", allPatients);
         req.setAttribute("patientsEnAttente", patientsEnAttente);
+        if (filteredPatients != null) {
+            req.setAttribute("filteredPatients", filteredPatients);
+        }
         req.setAttribute("pageTitle", "Liste des Patients");
         req.getRequestDispatcher("/WEB-INF/jsp/infirmier/dashboard.jsp").forward(req, resp);
     }
@@ -143,8 +190,8 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 .stream()
                 .filter(Patient::isEnAttente)
                 .sorted((p1, p2) -> {
-                    if (p1.getHeureArrivee() != null && p2.getHeureArrivee() != null) {
-                        return p1.getHeureArrivee().compareTo(p2.getHeureArrivee());
+                    if (p1.getCreatedAt() != null && p2.getCreatedAt() != null) {
+                        return p1.getCreatedAt().compareTo(p2.getCreatedAt());
                     }
                     return 0;
                 })
@@ -165,8 +212,8 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 .stream()
                 .filter(Patient::isEnAttente)
                 .sorted((p1, p2) -> {
-                    if (p1.getHeureArrivee() != null && p2.getHeureArrivee() != null) {
-                        return p1.getHeureArrivee().compareTo(p2.getHeureArrivee());
+                    if (p1.getCreatedAt() != null && p2.getCreatedAt() != null) {
+                        return p1.getCreatedAt().compareTo(p2.getCreatedAt());
                     }
                     return 0;
                 })
@@ -210,6 +257,11 @@ public class InfirmierDashboardServlet extends HttpServlet {
             } else {
                 // Création d'un nouveau patient
                 patient = new Patient();
+                // Nouveau patient automatiquement en attente
+                patient.setEnAttente(true);
+                patient.setStatut("En attente");
+                patient.setCreatedAt(LocalDateTime.now());
+                patient.setHeureArrivee(LocalDateTime.now());
             }
 
             // Mise à jour des champs
@@ -230,8 +282,10 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 session.setAttribute("success", "Patient modifié avec succès");
             } else {
                 patientDAO.create(patient);
+                // Ajouter automatiquement le nouveau patient à la file d'attente
+                fileAttenteService.add(patient, LocalDate.now());
                 HttpSession session = req.getSession();
-                session.setAttribute("success", "Patient ajouté avec succès");
+                session.setAttribute("success", "Patient ajouté avec succès et placé en file d'attente");
             }
         } catch (Exception e) {
             HttpSession session = req.getSession();
@@ -268,8 +322,8 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 .stream()
                 .filter(Patient::isEnAttente)
                 .sorted((p1, p2) -> {
-                    if (p1.getHeureArrivee() != null && p2.getHeureArrivee() != null) {
-                        return p1.getHeureArrivee().compareTo(p2.getHeureArrivee());
+                    if (p1.getCreatedAt() != null && p2.getCreatedAt() != null) {
+                        return p1.getCreatedAt().compareTo(p2.getCreatedAt());
                     }
                     return 0;
                 })
@@ -290,6 +344,8 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 Patient patient = patientDAO.findById(id).orElse(null);
                 if (patient != null) {
                     patient.setEnAttente(true);
+                    // Ne pas modifier created_at - on garde la date de création originale
+                    // On met juste heureArrivee pour l'historique mais le tri se fait par created_at
                     patient.setHeureArrivee(LocalDateTime.now());
                     patientDAO.update(patient);
                     fileAttenteService.add(patient, LocalDate.now());

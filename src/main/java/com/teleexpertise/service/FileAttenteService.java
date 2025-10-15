@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 public class FileAttenteService {
 
-    // Map pour stocker les patients en attente par date
     private final Map<LocalDate, List<Patient>> fileAttente = new ConcurrentHashMap<>();
 
 

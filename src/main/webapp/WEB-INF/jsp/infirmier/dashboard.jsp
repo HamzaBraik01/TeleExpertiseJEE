@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -331,13 +332,80 @@
 
         <!-- Patient List -->
         <c:if test="${param.action == 'listPatients' || (param.action != 'addPatientForm' && param.action != 'editPatientForm' && formMode == null)}">
-            <div class="bg-white/95 backdrop-blur-md border border-white/20 rounded-3xl shadow-lg overflow-hidden">
-                <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-b border-white/20 px-6 py-5">
-                    <h5 class="text-xl font-bold text-slate-800">Liste des Patients</h5>
+            <!-- Search Bar -->
+            <div class="bg-white/95 backdrop-blur-md border border-white/20 rounded-3xl shadow-lg mb-6 overflow-hidden">
+                <div class="bg-gradient-to-r from-cyan-50 to-blue-50 border-b border-white/20 px-6 py-4">
+                    <h5 class="text-lg font-bold text-slate-800 flex items-center">
+                        <i class="bi bi-search mr-2 text-cyan-600"></i>
+                        Rechercher un Patient
+                    </h5>
                 </div>
                 <div class="p-6">
+                    <form action="${pageContext.request.contextPath}/infirmier/dashboard" method="GET" class="mb-4">
+                        <input type="hidden" name="action" value="listPatients">
+                        <div class="flex gap-3">
+                            <div class="relative flex-1">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="bi bi-search text-slate-400 text-lg"></i>
+                                </div>
+                                <input type="text"
+                                       name="searchTerm"
+                                       value="${param.searchTerm}"
+                                       placeholder="Rechercher par nom, prénom, numéro de sécurité sociale ou téléphone..."
+                                       class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-slate-200 focus:border-cyan-500 focus:outline-none focus:-translate-y-1 transition-all duration-300 bg-white/90 backdrop-blur-md font-medium text-slate-700 placeholder-slate-400 shadow-sm">
+                            </div>
+                            <button type="submit"
+                                    class="px-6 py-4 bg-gradient-to-r from-cyan-600 to-cyan-500 text-white font-semibold rounded-2xl shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                                <i class="bi bi-search mr-2"></i>Rechercher
+                            </button>
+                            <c:if test="${not empty param.searchTerm}">
+                                <a href="${pageContext.request.contextPath}/infirmier/dashboard?action=listPatients"
+                                   class="px-6 py-4 bg-slate-200 text-slate-700 font-semibold rounded-2xl hover:bg-slate-300 hover:-translate-y-1 transition-all duration-300">
+                                    <i class="bi bi-x-circle mr-2"></i>Effacer
+                                </a>
+                            </c:if>
+                        </div>
+                    </form>
+
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-sm text-slate-600 font-medium">Filtres rapides:</span>
+                        <a href="${pageContext.request.contextPath}/infirmier/dashboard?action=listPatients&filterStatus=disponible"
+                           class="px-3 py-1 text-xs font-semibold rounded-full border-2 transition-all duration-300 ${param.filterStatus == 'disponible' ? 'bg-green-500 text-white border-green-500' : 'border-green-500 text-green-600 hover:bg-green-500 hover:text-white'}">
+                            <i class="bi bi-check-circle mr-1"></i>Disponibles
+                        </a>
+                        <a href="${pageContext.request.contextPath}/infirmier/dashboard?action=listPatients&filterStatus=attente"
+                           class="px-3 py-1 text-xs font-semibold rounded-full border-2 transition-all duration-300 ${param.filterStatus == 'attente' ? 'bg-amber-500 text-white border-amber-500' : 'border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white'}">
+                            <i class="bi bi-clock mr-1"></i>En attente
+                        </a>
+                        <a href="${pageContext.request.contextPath}/infirmier/dashboard?action=listPatients"
+                           class="px-3 py-1 text-xs font-semibold rounded-full border-2 transition-all duration-300 ${empty param.filterStatus ? 'bg-slate-400 text-white border-slate-400' : 'border-slate-400 text-slate-600 hover:bg-slate-400 hover:text-white'}">
+                            <i class="bi bi-list mr-1"></i>Tous
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white/95 backdrop-blur-md border border-white/20 rounded-3xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-50 to-cyan-50 border-b border-white/20 px-6 py-5">
+                    <div class="flex justify-between items-center">
+                        <h5 class="text-xl font-bold text-slate-800">Liste des Patients</h5>
+                        <div class="text-sm text-slate-600 font-medium">
+                            <c:choose>
+                                <c:when test="${not empty param.searchTerm or not empty param.filterStatus}">
+                                    ${not empty filteredPatients ? filteredPatients.size() : 0} sur ${not empty allPatients ? allPatients.size() : 0} patients
+                                </c:when>
+                                <c:otherwise>
+                                    ${not empty allPatients ? allPatients.size() : 0} patients au total
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <c:set var="patientsToDisplay" value="${not empty filteredPatients ? filteredPatients : allPatients}" />
+
                     <c:choose>
-                        <c:when test="${not empty allPatients}">
+                        <c:when test="${not empty patientsToDisplay}">
                             <div class="overflow-x-auto rounded-2xl">
                                 <table class="w-full">
                                     <thead>
@@ -351,7 +419,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <c:forEach var="patient" items="${allPatients}">
+                                    <c:forEach var="patient" items="${patientsToDisplay}">
                                         <tr class="border-b border-slate-100 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-cyan-50/30 transition-all duration-300 hover:scale-[1.01]">
                                             <td class="px-5 py-5 font-medium text-slate-800">${patient.nomComplet}</td>
                                             <td class="px-5 py-5 font-medium text-slate-600">${patient.dateNaissance}</td>
@@ -368,17 +436,20 @@
                                             <td class="px-5 py-5">
                                                 <div class="flex gap-2">
                                                     <a href="${pageContext.request.contextPath}/infirmier/dashboard?action=editPatientForm&id=${patient.id}"
-                                                       class="px-3 py-2 border-2 border-blue-600 text-blue-600 rounded-xl hover:bg-gradient-to-r hover:from-blue-600 hover:to-cyan-600 hover:text-white hover:border-transparent transition-all duration-300 hover:-translate-y-1">
+                                                       class="px-3 py-2 border-2 border-blue-600 text-blue-600 rounded-xl hover:bg-gradient-to-r hover:from-blue-600 hover:to-cyan-600 hover:text-white hover:border-transparent transition-all duration-300 hover:-translate-y-1"
+                                                       title="Modifier le patient">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
                                                     <c:if test="${!patient.enAttente}">
                                                         <a href="${pageContext.request.contextPath}/infirmier/dashboard?action=addToFileAttente&patientId=${patient.id}"
-                                                           class="px-3 py-2 border-2 border-amber-600 text-amber-600 rounded-xl hover:bg-gradient-to-r hover:from-amber-600 hover:to-yellow-500 hover:text-white hover:border-transparent transition-all duration-300 hover:-translate-y-1">
+                                                           class="px-3 py-2 border-2 border-amber-600 text-amber-600 rounded-xl hover:bg-gradient-to-r hover:from-amber-600 hover:to-yellow-500 hover:text-white hover:border-transparent transition-all duration-300 hover:-translate-y-1"
+                                                           title="Ajouter à la file d'attente">
                                                             <i class="bi bi-clock"></i>
                                                         </a>
                                                     </c:if>
                                                     <a href="${pageContext.request.contextPath}/infirmier/dashboard?action=deletePatient&id=${patient.id}"
                                                        class="px-3 py-2 border-2 border-red-600 text-red-600 rounded-xl hover:bg-gradient-to-r hover:from-red-600 hover:to-red-500 hover:text-white hover:border-transparent transition-all duration-300 hover:-translate-y-1"
+                                                       title="Supprimer le patient"
                                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce patient ?')">
                                                         <i class="bi bi-trash"></i>
                                                     </a>
@@ -392,12 +463,25 @@
                         </c:when>
                         <c:otherwise>
                             <div class="text-center py-12">
-                                <i class="bi bi-inbox text-6xl text-slate-400"></i>
-                                <p class="mt-4 text-slate-600 font-medium">Aucun patient enregistré</p>
-                                <a href="${pageContext.request.contextPath}/infirmier/dashboard?action=addPatientForm"
-                                   class="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
-                                    <i class="bi bi-person-plus mr-2"></i> Ajouter le premier patient
-                                </a>
+                                <c:choose>
+                                    <c:when test="${not empty param.searchTerm or not empty param.filterStatus}">
+                                        <i class="bi bi-search text-6xl text-slate-400"></i>
+                                        <p class="mt-4 text-slate-600 font-medium">Aucun patient trouvé</p>
+                                        <p class="text-sm text-slate-500 mb-4">Essayez de modifier vos critères de recherche</p>
+                                        <a href="${pageContext.request.contextPath}/infirmier/dashboard?action=listPatients"
+                                           class="inline-block px-6 py-3 bg-gradient-to-r from-slate-600 to-slate-500 text-white font-semibold rounded-xl shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                                            <i class="bi bi-arrow-left mr-2"></i>Voir tous les patients
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <i class="bi bi-inbox text-6xl text-slate-400"></i>
+                                        <p class="mt-4 text-slate-600 font-medium">Aucun patient enregistré</p>
+                                        <a href="${pageContext.request.contextPath}/infirmier/dashboard?action=addPatientForm"
+                                           class="inline-block mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                                            <i class="bi bi-person-plus mr-2"></i> Ajouter le premier patient
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </c:otherwise>
                     </c:choose>
