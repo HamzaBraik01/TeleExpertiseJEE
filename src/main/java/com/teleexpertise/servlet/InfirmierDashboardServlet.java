@@ -83,8 +83,12 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 .stream()
                 .filter(Patient::isEnAttente)
                 .sorted((p1, p2) -> {
-                    if (p1.getCreatedAt() != null && p2.getCreatedAt() != null) {
-                        return p1.getCreatedAt().compareTo(p2.getCreatedAt());
+                    if (p1.getHeureArrivee() != null && p2.getHeureArrivee() != null) {
+                        return p1.getHeureArrivee().compareTo(p2.getHeureArrivee());
+                    } else if (p1.getHeureArrivee() != null) {
+                        return -1;
+                    } else if (p2.getHeureArrivee() != null) {
+                        return 1;
                     }
                     return 0;
                 })
@@ -166,8 +170,12 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 .stream()
                 .filter(Patient::isEnAttente)
                 .sorted((p1, p2) -> {
-                    if (p1.getCreatedAt() != null && p2.getCreatedAt() != null) {
-                        return p1.getCreatedAt().compareTo(p2.getCreatedAt());
+                    if (p1.getHeureArrivee() != null && p2.getHeureArrivee() != null) {
+                        return p1.getHeureArrivee().compareTo(p2.getHeureArrivee());
+                    } else if (p1.getHeureArrivee() != null) {
+                        return -1;
+                    } else if (p2.getHeureArrivee() != null) {
+                        return 1;
                     }
                     return 0;
                 })
@@ -190,8 +198,12 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 .stream()
                 .filter(Patient::isEnAttente)
                 .sorted((p1, p2) -> {
-                    if (p1.getCreatedAt() != null && p2.getCreatedAt() != null) {
-                        return p1.getCreatedAt().compareTo(p2.getCreatedAt());
+                    if (p1.getHeureArrivee() != null && p2.getHeureArrivee() != null) {
+                        return p1.getHeureArrivee().compareTo(p2.getHeureArrivee());
+                    } else if (p1.getHeureArrivee() != null) {
+                        return -1;
+                    } else if (p2.getHeureArrivee() != null) {
+                        return 1;
                     }
                     return 0;
                 })
@@ -212,8 +224,12 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 .stream()
                 .filter(Patient::isEnAttente)
                 .sorted((p1, p2) -> {
-                    if (p1.getCreatedAt() != null && p2.getCreatedAt() != null) {
-                        return p1.getCreatedAt().compareTo(p2.getCreatedAt());
+                    if (p1.getHeureArrivee() != null && p2.getHeureArrivee() != null) {
+                        return p1.getHeureArrivee().compareTo(p2.getHeureArrivee());
+                    } else if (p1.getHeureArrivee() != null) {
+                        return -1;
+                    } else if (p2.getHeureArrivee() != null) {
+                        return 1;
                     }
                     return 0;
                 })
@@ -322,8 +338,12 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 .stream()
                 .filter(Patient::isEnAttente)
                 .sorted((p1, p2) -> {
-                    if (p1.getCreatedAt() != null && p2.getCreatedAt() != null) {
-                        return p1.getCreatedAt().compareTo(p2.getCreatedAt());
+                    if (p1.getHeureArrivee() != null && p2.getHeureArrivee() != null) {
+                        return p1.getHeureArrivee().compareTo(p2.getHeureArrivee());
+                    } else if (p1.getHeureArrivee() != null) {
+                        return -1;
+                    } else if (p2.getHeureArrivee() != null) {
+                        return 1;
                     }
                     return 0;
                 })
@@ -344,8 +364,7 @@ public class InfirmierDashboardServlet extends HttpServlet {
                 Patient patient = patientDAO.findById(id).orElse(null);
                 if (patient != null) {
                     patient.setEnAttente(true);
-                    // Ne pas modifier created_at - on garde la date de création originale
-                    // On met juste heureArrivee pour l'historique mais le tri se fait par created_at
+                    // Mettre à jour l'heure d'arrivée pour respecter l'ordre chronologique dans la file d'attente
                     patient.setHeureArrivee(LocalDateTime.now());
                     patientDAO.update(patient);
                     fileAttenteService.add(patient, LocalDate.now());

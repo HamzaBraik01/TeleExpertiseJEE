@@ -13,7 +13,7 @@ import java.util.Optional;
 public class PatientDAO {
 
     private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory("TeleExpertisePU");
+            Persistence.createEntityManagerFactory("teleexpertise-pu");
 
     public List<Patient> searchByName(String nom) {
         EntityManager em = emf.createEntityManager();
@@ -65,7 +65,8 @@ public class PatientDAO {
     public Optional<Patient> findById(Long id) {
         EntityManager em = emf.createEntityManager();
         try {
-            return Optional.ofNullable(em.find(Patient.class, id));
+            Patient patient = em.find(Patient.class, id);
+            return Optional.ofNullable(patient);
         } finally {
             em.close();
         }
@@ -75,6 +76,18 @@ public class PatientDAO {
         EntityManager em = emf.createEntityManager();
         try {
             TypedQuery<Patient> query = em.createQuery("SELECT p FROM Patient p", Patient.class);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Patient> findPatientsEnAttente() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Patient> query = em.createQuery(
+                "SELECT p FROM Patient p WHERE p.statut = 'EN_ATTENTE' ORDER BY p.priorite DESC, p.dateArrivee ASC",
+                Patient.class);
             return query.getResultList();
         } finally {
             em.close();

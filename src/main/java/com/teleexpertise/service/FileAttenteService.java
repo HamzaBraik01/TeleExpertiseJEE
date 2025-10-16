@@ -19,9 +19,8 @@ public class FileAttenteService {
     public void add(Patient patient, LocalDate date) {
         if (patient != null && date != null) {
             patient.setEnAttente(true);
-            if (patient.getHeureArrivee() == null) {
-                patient.setHeureArrivee(LocalDateTime.now());
-            }
+            // Toujours mettre à jour l'heure d'arrivée pour respecter l'ordre de la file d'attente
+            patient.setHeureArrivee(LocalDateTime.now());
 
             fileAttente.computeIfAbsent(date, k -> new ArrayList<>()).add(patient);
         }
