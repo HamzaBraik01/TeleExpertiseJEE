@@ -297,7 +297,7 @@ classDiagram
         -String avisMedical
         -String recommandations
         -String diagnosticSpecialiste
-        +terminerExpertise(String, String) void
+        +terminerExpertise() void
         +isTerminee() boolean
         +getDureeTraitement() long
         +getCoutExpertise() Double
@@ -409,32 +409,32 @@ classDiagram
     }
 
     %% Relations principales
-    User ||--|| Role : "a un"
-    User ||--o| Medecin : "peut être"
-    Patient ||--o{ SignesVitaux : "a des"
-    Patient ||--o{ Consultation : "participe à"
+    User "1" -- "1" Role
+    User "1" -- "0..1" Medecin
+    Patient "1" -- "0..*" SignesVitaux
+    Patient "1" -- "0..*" Consultation
     
-    Consultation }o--|| Patient : "concerne"
-    Consultation }o--|| User : "réalisée par (médecin)"
-    Consultation ||--o{ ActeTechnique : "comprend"
-    Consultation ||--o| DemandeExpertise : "peut générer"
-    Consultation }o--|| StatutConsultation : "a un statut"
+    Consultation "*" -- "1" Patient
+    Consultation "*" -- "1" User
+    Consultation "1" -- "0..*" ActeTechnique
+    Consultation "1" -- "0..1" DemandeExpertise
+    Consultation "*" -- "1" StatutConsultation
     
-    DemandeExpertise }o--|| Consultation : "liée à"
-    DemandeExpertise }o--|| Medecin : "assignée à (spécialiste)"
-    DemandeExpertise }o--o| Creneau : "utilise"
-    DemandeExpertise }o--|| Priorite : "a une priorité"
-    DemandeExpertise }o--|| StatutExpertise : "a un statut"
+    DemandeExpertise "*" -- "1" Consultation
+    DemandeExpertise "*" -- "1" Medecin
+    DemandeExpertise "*" -- "0..1" Creneau
+    DemandeExpertise "*" -- "1" Priorite
+    DemandeExpertise "*" -- "1" StatutExpertise
     
-    Medecin }o--|| User : "profil de"
-    Medecin }o--|| Specialite : "pratique"
-    Medecin ||--o{ Creneau : "définit"
-    Medecin ||--o{ DemandeExpertise : "traite"
+    Medecin "1" -- "1" User
+    Medecin "*" -- "1" Specialite
+    Medecin "1" -- "0..*" Creneau
+    Medecin "1" -- "0..*" DemandeExpertise
     
-    ActeTechnique }o--|| TypeActeTechnique : "de type"
-    ActeTechnique }o--|| Consultation : "lors de"
+    ActeTechnique "*" -- "1" TypeActeTechnique
+    ActeTechnique "*" -- "1" Consultation
     
-    SignesVitaux }o--|| Patient : "appartient à"
+    SignesVitaux "*" -- "1" Patient
 ```
 
 ---
@@ -862,4 +862,3 @@ Si vous découvrez une vulnérabilité de sécurité, veuillez envoyer un email 
 Made with ❤️ and ☕ by HAMZA BRAIK
 
 </div>
-
