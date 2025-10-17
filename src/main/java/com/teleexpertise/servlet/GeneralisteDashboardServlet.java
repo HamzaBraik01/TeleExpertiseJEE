@@ -23,10 +23,7 @@ public class GeneralisteDashboardServlet extends HttpServlet {
             return;
         }
 
-        User user = (User) session.getAttribute("user");
-        req.setAttribute("user", user);
-        req.setAttribute("pageTitle", "Dashboard Généraliste");
-
-        req.getRequestDispatcher("/WEB-INF/jsp/generaliste/dashboard.jsp").forward(req, resp);
+        // Redirection directe vers le servlet de consultation
+        resp.sendRedirect(req.getContextPath() + "/generaliste/consultation");
     }
 }

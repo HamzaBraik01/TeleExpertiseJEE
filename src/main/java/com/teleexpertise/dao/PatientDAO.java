@@ -86,7 +86,7 @@ public class PatientDAO {
         EntityManager em = emf.createEntityManager();
         try {
             TypedQuery<Patient> query = em.createQuery(
-                "SELECT p FROM Patient p WHERE p.statut = 'EN_ATTENTE' ORDER BY p.priorite DESC, p.dateArrivee ASC",
+                "SELECT p FROM Patient p WHERE p.enAttente = true ORDER BY p.heureArrivee ASC",
                 Patient.class);
             return query.getResultList();
         } finally {

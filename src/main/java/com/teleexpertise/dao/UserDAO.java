@@ -14,7 +14,7 @@ import java.util.Optional;
 public class UserDAO {
 
     private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory("TeleExpertisePU");
+            Persistence.createEntityManagerFactory("teleexpertise-pu");
 
 
     public Optional<User> findByUsername(String username) {

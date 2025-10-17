@@ -17,6 +17,7 @@ public class AuthFilter implements Filter {
 
     private static final List<String> PUBLIC_URLS = Arrays.asList(
             "/auth/login",
+            "/auth/logout",
             "/assets/",
             "/css/",
             "/js/",
