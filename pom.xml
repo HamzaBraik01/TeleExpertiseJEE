@@ -149,13 +149,33 @@
         </configuration>
       </plugin>
 
-      <!-- Exec Maven Plugin for running Java classes -->
+      <!-- Exec Maven Plugin pour exécuter DatabaseSeeder -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>seed-database</id>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.teleexpertise.util.DatabaseSeeder</mainClass>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-creneaux</id>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>com.teleexpertise.util.CreneauxGenerator</mainClass>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
-          <mainClass>com.teleexpertise.util.DatabaseInitializer</mainClass>
+          <mainClass>com.teleexpertise.util.DatabaseSeeder</mainClass>
         </configuration>
       </plugin>
     </plugins>

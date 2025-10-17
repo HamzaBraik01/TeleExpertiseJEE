@@ -26,9 +26,14 @@
             <div class="col-md-12">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2><i class="fas fa-stethoscope"></i> Gestion des Consultations</h2>
-                    <a href="consultation?action=nouvelle" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Nouvelle Consultation
-                    </a>
+                    <div>
+                        <a href="specialistes" class="btn btn-info me-2">
+                            <i class="fas fa-user-md"></i> Rechercher un Spécialiste
+                        </a>
+                        <a href="consultation?action=nouvelle" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Nouvelle Consultation
+                        </a>
+                    </div>
                 </div>
 
                 <c:if test="${not empty error}">

@@ -12,7 +12,7 @@ public class JPAUtil {
     static {
         try {
             // Initialise l'EntityManagerFactory avec la configuration du persistence.xml
-            entityManagerFactory = Persistence.createEntityManagerFactory("TeleExpertisePU");
+            entityManagerFactory = Persistence.createEntityManagerFactory("teleexpertise-pu");
             System.out.println("✅ EntityManagerFactory initialisé avec succès !");
         } catch (Exception e) {
             System.err.println("❌ Erreur lors de l'initialisation de JPA : " + e.getMessage());
@@ -28,9 +28,7 @@ public class JPAUtil {
         return entityManagerFactory.createEntityManager();
     }
 
-    /**
-     * Ferme l'EntityManagerFactory
-     */
+
     public static void shutdown() {
         if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
             entityManagerFactory.close();
